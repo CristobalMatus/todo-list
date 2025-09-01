@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { TodoListService, Todo } from '../services/todo-list.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-todo-list',
@@ -8,29 +9,43 @@ import { TodoListService, Todo } from '../services/todo-list.service';
 })
 export class TodoListComponent implements OnInit {
   newTodo: string = '';
-  todos: Todo[] = [];
+  todos$: Observable<Todo[]>;
+  activeTab: 'all' | 'active' | 'completed' = 'all';
 
-  constructor(private todoService: TodoListService) {}
+  constructor(private todoService: TodoListService) {
+    this.todos$ = this.todoService.todos$;
+  }
 
   ngOnInit() {
-    this.todos = this.todoService.getTodos();
+    this.todos$.subscribe(todos => {
+      //console.log('TODOS:', todos);
+    });
   }
 
   addTodo() {
     if (this.newTodo.trim()) {
-      this.todos.push({ text: this.newTodo.trim(), completed: false });
+      this.todoService.addTodo(this.newTodo.trim());
       this.newTodo = '';
-      this.todoService.saveTodos(this.todos);
     }
   }
 
-  deleteTodo(index: number) {
-    this.todos.splice(index, 1);
-    this.todoService.saveTodos(this.todos);
+  deleteTodo(todo: Todo) {
+    this.todoService.deleteTodo(todo);
   }
 
-  toggleCompleted(index: number) {
-    this.todos[index].completed = !this.todos[index].completed;
-    this.todoService.saveTodos(this.todos);
+  toggleCompleted(todo: Todo) {
+    this.todoService.toggleCompleted(todo);
+  }
+
+  getActiveTodos(todos: Todo[]): Todo[] {
+    const activos = todos.filter(t => !t.completed);
+    //console.log('ACTIVAS:', activos);
+    return activos;
+  }
+
+  getCompletedTodos(todos: Todo[]): Todo[] {
+    const completadas = todos.filter(t => t.completed);
+    //console.log('COMPLETADAS:', completadas);
+    return completadas;
   }
 }

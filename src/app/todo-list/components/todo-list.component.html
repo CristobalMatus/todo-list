@@ -1,22 +1,74 @@
-<div class="container py-5">
-  <div class="row justify-content-center">
-    <div class="col-md-6">
-      <h2 class="mb-4 text-center">Todo List</h2>
-      <form (submit)="addTodo()" class="input-group mb-3">
-        <input type="text" [(ngModel)]="newTodo" name="todo" class="form-control" placeholder="Agregar tarea" required>
-        <button class="btn btn-primary" type="submit">Agregar</button>
-      </form>
-      <ul class="list-group">
-        <li *ngFor="let todo of todos; let i = index" class="list-group-item d-flex justify-content-between align-items-center" [ngClass]="{'list-group-item-success': todo.completed}">
-          <span [class.text-decoration-line-through]="todo.completed">{{ todo.text }}</span>
-          <div>
-            <button class="btn btn-sm btn-success me-2" (click)="toggleCompleted(i)">
-              <i class="bi" [ngClass]="todo.completed ? 'bi-check-square' : 'bi-square'" aria-hidden="true"></i>
-            </button>
-            <button class="btn btn-sm btn-danger" (click)="deleteTodo(i)"><i class="bi bi-trash" aria-hidden="true"></i></button>
+<section class="vh-100 gradient-custom d-flex align-items-center justify-content-center">
+  <div class="container py-5 h-100">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+      <div class="col col-xl-10">
+        <div class="card">
+          <div class="card-body p-5">
+            <h1 class="text-center mb-5 fw-bold" style="letter-spacing:2px;">TODO LIST</h1>
+            <form class="row g-2 mb-4" (submit)="addTodo()">
+              <div class="col-9 col-md-10">
+                <input type="text" [(ngModel)]="newTodo" name="todo" id="form2" class="form-control" required placeholder="Nueva tarea..." />
+              </div>
+              <div class="col-3 col-md-2 d-grid">
+                <button type="submit" class="btn gradient-btn">Agregar</button>
+              </div>
+            </form>
+            <!-- Tabs navs -->
+            <ul class="nav nav-tabs mb-4 pb-2" id="ex1" role="tablist">
+              <li class="nav-item" role="presentation">
+                <a class="nav-link gradient-tab" [class.active]="activeTab === 'all'" (click)="activeTab = 'all'" id="ex1-tab-1" role="tab">Todas</a>
+              </li>
+              <li class="nav-item" role="presentation">
+                <a class="nav-link gradient-tab" [class.active]="activeTab === 'active'" (click)="activeTab = 'active'" id="ex1-tab-2" role="tab">Activas</a>
+              </li>
+              <li class="nav-item" role="presentation">
+                <a class="nav-link gradient-tab" [class.active]="activeTab === 'completed'" (click)="activeTab = 'completed'" id="ex1-tab-3" role="tab">Completadas</a>
+              </li>
+            </ul>
+            <!-- Tabs navs -->
+            <!-- Tabs content -->
+            <div class="tab-content" id="ex1-content">
+              <!-- Todas las tareas -->
+              <div class="tab-pane" [class.show]="activeTab === 'all'" [class.active]="activeTab === 'all'" role="tabpanel">
+                <ul class="list-group mb-0">
+                  <ng-container *ngIf="todos$ | async as todos">
+                    <li *ngFor="let todo of todos" class="list-group-item d-flex align-items-center border-0 mb-2 rounded" style="background-color: #f4f6f7;">
+                      <input class="form-check-input me-2" type="checkbox" [checked]="todo.completed" (change)="toggleCompleted(todo)" />
+                      <span [ngClass]="{'text-decoration-line-through': todo.completed}">{{ todo.text }}</span>
+                      <button class="btn btn-sm btn-danger ms-auto" (click)="deleteTodo(todo)"><i class="bi bi-trash" aria-hidden="true"></i></button>
+                    </li>
+                  </ng-container>
+                </ul>
+              </div>
+              <!-- Tareas activas -->
+              <div class="tab-pane" [class.show]="activeTab === 'active'" [class.active]="activeTab === 'active'" role="tabpanel">
+                <ul class="list-group mb-0">
+                  <ng-container *ngIf="todos$ | async as todos">
+                    <li *ngFor="let todo of getActiveTodos(todos)" class="list-group-item d-flex align-items-center border-0 mb-2 rounded" style="background-color: #f4f6f7;">
+                      <input class="form-check-input me-2" type="checkbox" [checked]="todo.completed" (change)="toggleCompleted(todo)" />
+                      <span>{{ todo.text }}</span>
+                      <button class="btn btn-sm btn-danger ms-auto" (click)="deleteTodo(todo)"><i class="bi bi-trash" aria-hidden="true"></i></button>
+                    </li>
+                  </ng-container>
+                </ul>
+              </div>
+              <!-- Tareas completadas -->
+              <div class="tab-pane" [class.show]="activeTab === 'completed'" [class.active]="activeTab === 'completed'" role="tabpanel">
+                <ul class="list-group mb-0">
+                  <ng-container *ngIf="todos$ | async as todos">
+                    <li *ngFor="let todo of getCompletedTodos(todos)" class="list-group-item d-flex align-items-center border-0 mb-2 rounded" style="background-color: #f4f6f7;">
+                      <input class="form-check-input me-2" type="checkbox" [checked]="todo.completed" (change)="toggleCompleted(todo)" />
+                      <span class="text-decoration-line-through">{{ todo.text }}</span>
+                      <button class="btn btn-sm btn-danger ms-auto" (click)="deleteTodo(todo)"><i class="bi bi-trash" aria-hidden="true"></i></button>
+                    </li>
+                  </ng-container>
+                </ul>
+              </div>
+            </div>
+            <!-- Tabs content -->
           </div>
-        </li>
-      </ul>
+        </div>
+      </div>
     </div>
   </div>
-</div>
+</section>

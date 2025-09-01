@@ -1,1 +1,45 @@
-/* You can add global styles to this file, and also import other style files */
+.inactive-tab {
+	opacity: 1 !important;
+	color: #fff !important;
+	background: linear-gradient(90deg, #fda085 0%, #f6d365 100%) !important;
+	border: none !important;
+}
+.gradient-btn {
+	background: linear-gradient(90deg, #fda085 0%, #f6d365 100%);
+	color: #fff;
+	border: none;
+	font-weight: bold;
+	transition: box-shadow 0.2s;
+}
+.gradient-btn:hover, .gradient-btn:focus {
+	box-shadow: 0 0 0 0.2rem rgba(253,160,133,0.25);
+	color: #fff;
+}
+
+.gradient-tab {
+	background: linear-gradient(90deg, #fda085 0%, #f6d365 100%);
+	color: #fff !important;
+	border: none !important;
+	margin-right: 2px;
+	opacity: 0.7;
+	transition: opacity 0.2s;
+}
+.gradient-tab.active {
+	opacity: 1;
+	color: #333 !important;
+	background: #fff !important;
+	border-bottom: 2px solid #fda085 !important;
+}
+
+body, html {
+	height: 100%;
+}
+
+.gradient-custom {
+	/* fallback for old browsers */
+	background: #f6d365;
+	/* Chrome 10-25, Safari 5.1-6 */
+	background: -webkit-linear-gradient(to right, #fda085, #f6d365);
+	/* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+	background: linear-gradient(to right, #fda085, #f6d365);
+}
