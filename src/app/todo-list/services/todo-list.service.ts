@@ -20,7 +20,7 @@ export class TodoListService {
     this.todos$ = this.todosSubject.asObservable();
   }
 
-  private getTodosFromStorage(): Todo[] {
+  public getTodosFromStorage(): Todo[] {
     const data = localStorage.getItem(this.storageKey);
     return data ? JSON.parse(data) : [];
   }
