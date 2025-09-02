@@ -1,4 +1,15 @@
 // setup-jest.ts
 import 'jest-preset-angular/setup-jest';
 
-// Puedes agregar aquí mocks globales, polyfills, etc. si los necesitas.
+// Mock localStorage
+Object.defineProperty(window, 'localStorage', {
+  value: {
+    getItem: jest.fn(),
+    setItem: jest.fn(),
+    removeItem: jest.fn(),
+    clear: jest.fn(),
+  },
+  writable: true,
+});
+
+
