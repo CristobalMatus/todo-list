@@ -1,10 +1,11 @@
-import { TodoListService } from './todo-list.service';
+import { TodoListService, Todo } from './todo-list.service';
 
 describe('TodoListService', () => {
   let service: TodoListService;
   let mockLocalStorage: Storage;
 
   beforeEach(() => {
+    // Crear un objeto store para simular localStorage
     const store: { [key: string]: string } = {};
     mockLocalStorage = {
       getItem: jest.fn((key: string) => store[key] || null),
@@ -15,7 +16,7 @@ describe('TodoListService', () => {
       key: jest.fn()
     };
 
-    // Mock localStorage
+    // Simular localStorage globalmente
     Object.defineProperty(window, 'localStorage', {
       value: mockLocalStorage,
       writable: true
@@ -92,5 +93,50 @@ describe('TodoListService', () => {
     });
 
     service.addTodo('Observable Test');
+  });
+
+  it('should handle toggleCompleted with multiple todos', () => {
+    // Agregar múltiples todos
+    service.addTodo('Todo 1');
+    service.addTodo('Todo 2');
+    service.addTodo('Todo 3');
+
+    const todos = service.getTodos();
+    expect(todos.length).toBe(3);
+
+    // Alternar el todo del medio
+    const middleTodo = todos[1];
+    expect(middleTodo.text).toBe('Todo 2');
+    expect(middleTodo.completed).toBe(false);
+
+    service.toggleCompleted(middleTodo);
+
+    const updatedTodos = service.getTodos();
+    expect(updatedTodos.length).toBe(3);
+
+    // Verificar que solo el todo del medio fue alternado
+    expect(updatedTodos[0].completed).toBe(false); // Todo 1 sin cambios
+    expect(updatedTodos[1].completed).toBe(true);  // Todo 2 alternado
+    expect(updatedTodos[2].completed).toBe(false); // Todo 3 sin cambios
+
+    // Verificar que el storage fue actualizado
+    expect(mockLocalStorage.setItem).toHaveBeenCalled();
+  });
+
+  it('should handle toggleCompleted when todo is not found', () => {
+    service.addTodo('Existing Todo');
+    const existingTodos = service.getTodos();
+
+    // Intentar alternar un todo que no existe
+    const nonExistentTodo: Todo = { text: 'Non-existent Todo', completed: false };
+    service.toggleCompleted(nonExistentTodo);
+
+    // Todos los todos deben permanecer sin cambios
+    const todosAfterToggle = service.getTodos();
+    expect(todosAfterToggle).toEqual(existingTodos);
+    expect(todosAfterToggle[0].completed).toBe(false);
+
+    // El storage aún debe ser actualizado (aunque nada haya cambiado)
+    expect(mockLocalStorage.setItem).toHaveBeenCalled();
   });
 });

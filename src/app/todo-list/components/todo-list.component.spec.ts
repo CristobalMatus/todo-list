@@ -10,7 +10,7 @@ describe('TodoListComponent', () => {
   beforeEach(() => {
     todosSubject = new BehaviorSubject<Todo[]>([]);
 
-    // Mock service
+    // Simular servicio
     mockTodoService = {
       addTodo: jest.fn(),
       deleteTodo: jest.fn(),
@@ -145,5 +145,33 @@ describe('TodoListComponent', () => {
 
     expect(component.getActiveTodos(todos)).toEqual([]);
     expect(component.getCompletedTodos(todos)).toEqual([]);
+  });
+
+  it('should call ngOnInit and subscribe to todos$', () => {
+    // Espiar el método subscribe
+    const subscribeSpy = jest.spyOn(component.todos$, 'subscribe');
+
+    // Llamar ngOnInit
+    component.ngOnInit();
+
+    // Verificar que subscribe fue llamado
+    expect(subscribeSpy).toHaveBeenCalled();
+
+    // Limpiar
+    subscribeSpy.mockRestore();
+  });
+
+  it('should receive todos updates through subscription', () => {
+    const testTodos: Todo[] = [{ text: 'Test Todo', completed: false }];
+
+    // Configurar espía para la suscripción
+    const subscriptionCallback = jest.fn();
+    component.todos$.subscribe(subscriptionCallback);
+
+    // Emitir nuevos todos
+    todosSubject.next(testTodos);
+
+    // Verificar que el callback fue llamado con los todos
+    expect(subscriptionCallback).toHaveBeenCalledWith(testTodos);
   });
 });

@@ -1,7 +1,7 @@
 // setup-jest.ts
 import 'jest-preset-angular/setup-jest';
 
-// Mock localStorage
+// Mock localStorage para las pruebas
 Object.defineProperty(window, 'localStorage', {
   value: {
     getItem: jest.fn(),
