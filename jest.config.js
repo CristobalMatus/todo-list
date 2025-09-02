@@ -4,7 +4,7 @@ module.exports = {
   testEnvironment: 'jsdom',
   moduleFileExtensions: ['ts', 'html', 'js', 'json'],
   transform: {
-    '^.+\\.(ts|html)$': 'jest-preset-angular',
+    '^.+\\.(ts|html)$': 'ts-jest',
   },
   moduleNameMapper: {
     '^@app/(.*)$': '<rootDir>/src/app/$1',
@@ -24,7 +24,13 @@ module.exports = {
   globals: {
     'ts-jest': {
       tsconfig: '<rootDir>/tsconfig.spec.json',
-      stringifyContentPathRegex: '\\.html$'
+      stringifyContentPathRegex: '\\.html$',
+      isolatedModules: true
     }
-  }
+  },
+  transformIgnorePatterns: [
+    'node_modules/(?!.*\\.mjs$)'
+  ],
+  clearMocks: true,
+  restoreMocks: true
 };

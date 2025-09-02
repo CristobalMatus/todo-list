@@ -1,26 +1,40 @@
+import { TestBed, ComponentFixture } from '@angular/core/testing';
+import { FormsModule } from '@angular/forms';
 import { TodoListComponent } from './todo-list.component';
 import { TodoListService, Todo } from '../services/todo-list.service';
 import { BehaviorSubject } from 'rxjs';
 
 describe('TodoListComponent', () => {
   let component: TodoListComponent;
-  let mockTodoService: jest.Mocked<TodoListService>;
+  let fixture: ComponentFixture<TodoListComponent>;
+  let mockTodoService: any;
   let todosSubject: BehaviorSubject<Todo[]>;
 
-  beforeEach(() => {
+  beforeEach(async () => {
+    // Crear el subject para simular el observable
     todosSubject = new BehaviorSubject<Todo[]>([]);
 
-    // Simular servicio
+    // Crear el mock del servicio usando Jest
     mockTodoService = {
       addTodo: jest.fn(),
       deleteTodo: jest.fn(),
       toggleCompleted: jest.fn(),
-      getTodos: jest.fn().mockReturnValue([]),
-      getTodosFromStorage: jest.fn().mockReturnValue([]),
+      getTodos: jest.fn(() => []),
+      getTodosFromStorage: jest.fn(() => []),
       todos$: todosSubject.asObservable()
-    } as any;
+    };
 
-    component = new TodoListComponent(mockTodoService);
+    await TestBed.configureTestingModule({
+      declarations: [TodoListComponent],
+      imports: [FormsModule],
+      providers: [
+        { provide: TodoListService, useValue: mockTodoService }
+      ]
+    }).compileComponents();
+
+    fixture = TestBed.createComponent(TodoListComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
   });
 
   afterEach(() => {

@@ -1,3 +1,4 @@
+import { TestBed } from '@angular/core/testing';
 import { TodoListService, Todo } from './todo-list.service';
 
 describe('TodoListService', () => {
@@ -22,7 +23,10 @@ describe('TodoListService', () => {
       writable: true
     });
 
-    service = new TodoListService();
+    TestBed.configureTestingModule({
+      providers: [TodoListService]
+    });
+    service = TestBed.inject(TodoListService);
   });
 
   afterEach(() => {
